@@ -28,9 +28,11 @@ def to_mininet(ip_address,argument_1,argument_2):
 	print command_1_output
 	print ("\n\n\n")
 	
+	time.sleep(8)
 	ssh = paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 	ssh.connect(ip_address,username='mininet', password='mininet', port=22)
+	#command2="cat iperf_results"
 	command2="ip route"
 	stdin, stdout, stderr = ssh.exec_command(command2)
 	stdout.channel.recv_exit_status()
