@@ -7,9 +7,9 @@ import sys
 import paramiko
 import time
 
-argument_1=sys.argv[1]
+topology=sys.argv[1]
 
-argument_2 = sys.argv[2]
+tos = sys.argv[2]
 
 
 def to_mininet(ip_address,argument_1,argument_2):
@@ -17,7 +17,7 @@ def to_mininet(ip_address,argument_1,argument_2):
 	ssh = paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 	ssh.connect(ip_address,username='mininet', password='mininet', port=22)
-	#command1="sudo python topology_creation.py argument_1 argument_2"
+	#command1="sudo python topology_creation.py "+str(topology)+" "+str(tos)
 	command1="ip addr"
 	stdin, stdout, stderr = ssh.exec_command(command1)
 	stdout.channel.recv_exit_status()
