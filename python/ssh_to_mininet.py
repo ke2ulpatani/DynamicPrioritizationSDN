@@ -27,7 +27,6 @@ def to_mininet(ip_address,argument_1,argument_2):
 	command_1_output=command_1_output.lower()
 	print command_1_output
 	print ("\n\n\n")
-	
 	time.sleep(8)
 	ssh = paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
