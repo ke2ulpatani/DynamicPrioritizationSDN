@@ -4,6 +4,7 @@
 from parse_ip_addr import *
 from parse_iperf import *
 import sys
+import subprocess
 
 topology=sys.argv[1]
 tos=sys.argv[2]
