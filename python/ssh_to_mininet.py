@@ -12,14 +12,13 @@ topology=sys.argv[1]
 tos = sys.argv[2]
 mac_to_be_blocked=sys.argv[3]
 
-
 def to_mininet(ip_address,topology,tos,mac_to_be_blocked):
 	
 	ssh = paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 	ssh.connect(ip_address,username='mininet', password='mininet', port=22)
-	#command1="sudo python pox_configure.py "+str(tos)+" "+str(mac_to_be_blocked)
-	command1="ip addr"
+	command1="python /home/mininet/pox_configure.py "+str(tos)+" "+str(mac_to_be_blocked)
+	#command1="ip addr"
 	stdin, stdout, stderr = ssh.exec_command(command1)
 	stdout.channel.recv_exit_status()
 	ssh.close()
