@@ -17,7 +17,7 @@ temp1="ovs-vsctl -- set Port s1-eth3 qos=@newqos -- --id=@newqos create QoS type
 temp2=tem1.split()
 subprocess.call(temp2)
 
-temp1="./pox/pox.py log.level --DEBUG forwarding.custom_firewall"
+temp1="./pox/pox.py log.level --DEBUG forwarding.custom_controller"
 temp2=temp1.split()
 subprocess.call(temp2)
 

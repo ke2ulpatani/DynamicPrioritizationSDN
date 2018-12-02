@@ -1,4 +1,5 @@
-# Copyright 2011-2012 James McCauley
+# Copyright 2013-2015 Nick Feamster
+# Based on l2_learning.py by James McCauley
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +15,6 @@
 
 """
 An L2 learning switch.
-
 It is derived from one written live for an SDN crash course.
 It is somwhat similar to NOX's pyswitch in that it installs
 exact-match rules for each flow.
@@ -26,6 +26,8 @@ from pox.lib.util import dpid_to_str
 from pox.lib.util import str_to_bool
 import time
 
+from pox.lib.addresses import EthAddr
+
 log = core.getLogger()
 
 # We don't want to flood immediately when a switch connects.
@@ -35,22 +37,17 @@ _flood_delay = 0
 class LearningSwitch (object):
   """
   The learning switch "brain" associated with a single OpenFlow switch.
-
   When we see a packet, we'd like to output it on a port which will
   eventually lead to the destination.  To accomplish this, we build a
   table that maps addresses to ports.
-
   We populate the table by observing traffic.  When we see a packet
   from some source coming from some port, we know that source is out
   that port.
-
   When we want to forward traffic, we look up the desintation in our
   table.  If we don't know the port, we simply send the message out
   all ports except the one it came in on.  (In the presence of loops,
   this is bad!).
-
   In short, our algorithm looks like this:
-
   For each packet from the switch:
   1) Use source address and switch port to update address/port table
   2) Is transparent = False and either Ethertype is LLDP or the packet's
@@ -74,6 +71,19 @@ class LearningSwitch (object):
      6a) Send the packet out appropriate port
   """
   def __init__ (self, connection, transparent):
+    #from sys import argv
+    #mac_address = argv[1]
+    #log.debug('%s added to firewall',mac_address)
+    #del argv
+    with open("/home/mininet/pox/pox/forwarding/mac_to_be_blocked.txt") as file:
+      x=file.read()
+    log.debug("mac added to firewall is %s",x)
+    with open("/home/mininet/pox/pox/forwarding/qos.txt") as file:
+      y=file.read()
+    log.debug("port added to queue is %s",y)
+
+
+
     # Switch we'll be adding L2 learning switch capabilities to
     self.connection = connection
     self.transparent = transparent
@@ -81,18 +91,60 @@ class LearningSwitch (object):
     # Our table
     self.macToPort = {}
 
+    # Our firewall table
+    self.firewall = {}
+
+    # Add a Couple of Rules
+    self.DeleteRule('00-00-00-00-00-01',EthAddr(x))
+    self.DeleteRule('00-00-00-00-00-02',EthAddr(x))
+    #self.AddRule('00-00-00-00-00-04',EthAddr('e6:3e:93:83:8f:e4'))
+    #self.AddRule('00-00-00-00-00-02',EthAddr('e6:3e:93:83:8f:e4'))
+    #self.AddRule('00-00-00-00-00-02',EthAddr('ce:61:f3:04:0c:fb'))
+
     # We want to hear PacketIn messages, so we listen
     # to the connection
     connection.addListeners(self)
 
     # We just use this to know when to log a helpful message
     self.hold_down_expired = _flood_delay == 0
-    with open("/home/mininet/pox/pox/forwarding/qos.txt") as file:
-      x=file.read()
-    log.debug("port added to queue is %s",x)
 
     #log.debug("Initializing LearningSwitch, transparent=%s",
     #          str(self.transparent))
+
+
+  # function that allows adding firewall rules into the firewall table
+  def AddRule (self, dpidstr, src=0,value=True):
+    self.firewall[(dpidstr,src)]=value
+    log.debug("Adding firewall rule in %s: %s", dpidstr, src) 
+    log.debug("%s",self.firewall)
+  # function that allows deleting firewall rules from the firewall table
+  def DeleteRule (self, dpidstr, src=0):
+    # try:
+    #   del self.firewall[(dpidstr,src)]
+    #   log.debug("Deleting firewall rule in %s: %s",
+    #             dpidstr, src)
+    # except KeyError:
+    #   log.error("Cannot find in %s: %s",
+    #             dpidstr, src)
+    self.firewall[(dpidstr,src)]=False
+
+
+  # check if packet is compliant to rules before proceeding
+  def CheckRule (self, dpidstr, src=0):
+    try:
+      entry = self.firewall[(dpidstr, src)]
+      
+      if (entry == True):
+        log.debug("Rule (%s) found in %s: FORWARD",
+                  src, dpidstr)
+      else:
+        log.debug("Rule (%s) found in %s: DROP",
+                  src, dpidstr)
+      return entry
+    except KeyError:
+      log.debug("Rule (%s) NOT found in %s: DROP",
+                src, dpidstr)
+      return True
 
   def _handle_PacketIn (self, event):
     """
@@ -147,6 +199,14 @@ class LearningSwitch (object):
 
     self.macToPort[packet.src] = event.port # 1
 
+    # Get the DPID of the Switch Connection
+    dpidstr = dpid_to_str(event.connection.dpid)
+
+    # Check the Firewall Rules
+    if self.CheckRule(dpidstr, packet.src) == False:
+      drop()
+      return
+
     if not self.transparent: # 2
       if packet.type == packet.LLDP_TYPE or packet.dst.isBridgeFiltered():
         drop() # 2a
@@ -165,10 +225,6 @@ class LearningSwitch (object):
               % (packet.src, packet.dst, dpid_to_str(event.dpid), port))
           drop(10)
           return
-        
-        #if msg.match.tp_src == 5001 or msg.match.tp_dst == 5001:
-        #  msg.actions.append(of.ofp_action_enqueue(port = port,queue_id=1))
-        #  return
         # 6
         log.debug("installing flow for %s.%i -> %s.%i" %
                   (packet.src, event.port, packet.dst, port))
@@ -180,7 +236,6 @@ class LearningSwitch (object):
           msg.actions.append(of.ofp_action_enqueue(port = port,queue_id=1))
         else:
           msg.actions.append(of.ofp_action_output(port = port))
-        
         msg.data = event.ofp # 6a
         self.connection.send(msg)
 
