@@ -12,7 +12,8 @@ exports.createTopology = function(request, response) {
     if (error !== null) {
         console.log('exec error: ' + error);
     }
-    
+    });
+
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "*");
     response.header("Access-Control-Request-Method", "*");
