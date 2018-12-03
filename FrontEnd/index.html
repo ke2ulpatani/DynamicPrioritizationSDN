@@ -9,16 +9,26 @@
 		  $('#main').submit(function (e) {
 		    e.preventDefault();
 
-		    var s = {"topology": $('#topology').children("option:selected").val(),
-		    		"service_name": $('#service').children("option:selected").val()};
+		    var service_name = $('#service_name').children("option:selected").val();
+		    var mac_address = $('#mac_address').children("option:selected").val();
+		    var topology = "linear";
+		    var s = {"service_name": service_name,
+		    		"mac_address": mac_address,
+		    		"topology":topology};
+		    if (service_name == "voip") {
+		    	s["bandwidth"] = "4";
+		    }
+
     		var url = "http://localhost:8081/api/createTopology";
+
+
+
 
     		$.ajax({
 			        type: "POST",
 			        url: url,
 			        contentType: "application/json; charset=UTF-8", 
-			        data: JSON.stringify({'topology': $('#topology').children('option:selected').val(),
-		    		'service_name': $('#service').children('option:selected').val()}),
+			        data: JSON.stringify(s),
 			        headers: {
            			   "Access-Control-Allow-Origin":"*"
           			},
@@ -41,20 +51,34 @@
 
 
 <body>
-	<form id ="main" method = "post">
+	<form align="middle" id ="main" method = "post">
 		<p>
-			<label>Select list</label>
+			<font size=7><b><label >Select preferences</label></b></font>
 			<br>
-			<select id = "topology">
-				<option value = "linear">Linear</option>
-				<option value = "custom">Custom</option>
-			</select>
-			<select id = "service">
+			<br>
+			<font size=5>
+			Service to be prioritized:
+			<select id = "service_name" style="width: 100px; height: 30px">
+				<option value = "voip">VOiP</option>
 				<option value = "http">HTTP</option>
-				<option value = "voip">VoIP</option>
 			</select>
+			</font>
 			<br>
-			<input type="submit" name="submit">
+			<br>
+			<font size=5>
+			MAC Address to be blocked:
+			<select id = "mac_address" style="width: 125px; height: 30px">
+				<option value = "00:00:00:00:00:01">00:00:00:00:00:01</option>
+				<option value = "00:00:00:00:00:02">00:00:00:00:00:02</option>
+				<option value = "00:00:00:00:00:03">00:00:00:00:00:03</option>
+				<option value = "00:00:00:00:00:04">00:00:00:00:00:04</option>
+				<option value = "00:00:00:00:00:05">00:00:00:00:00:05</option>
+				<option value = "00:00:00:00:00:06">00:00:00:00:00:06</option>
+			</select>
+			</font>
+			<br>
+			<br>
+			<input style="width: 100px; height: 50px" type="submit" name="submit">
 		</p>
 	</form>
 </body>
