@@ -1,19 +1,43 @@
 var exec = require('child_process').exec;
 
 exports.createTopology = function(request, response) {
-	var shellCommand = "python ../python/ssh_to_mininet.py "+request.body.service_name+" "+ request.body.topology+" &";
-	
-	exec(shellCommand, function(error, stdout, stderr) {
+    // request.body = JSON.parse(request.body);
 
-    console.log('stdout: ' + stdout);
-    console.log('stderr: ' + stderr);
-    if (error !== null) {
-        console.log('exec error: ' + error);
-    }
-    response.end("stdout: "+stdout);
-});
+    // var yale = JSON.parse(request.body);
+
+	var shellCommand = "python ../python/ssh_to_mininet.py "+request.body.service_name+" "+ request.body.topology+" &";
+
+    
+
+    console.log("this is the body:\t"+response);
+    console.log(shellCommand);
+    
+    response.header("Access-Control-Allow-Origin", "*");
+    response.header("Access-Control-Allow-Headers", "*");
+    response.header("Access-Control-Request-Method", "*");
+    
+
+    // var output = {"service_name":}
+    response.end();
+
 	
 };
+
+
+
+
+
+
+
+    // var shellCommand = "python ../python/ssh_to_mininet.py "+yale.service_name+" "+ yale.topology+" &";
+    
+    // exec(shellCommand, function(error, stdout, stderr) {
+
+ //    console.log('stdout: ' + stdout);
+ //    console.log('stderr: ' + stderr);
+ //    if (error !== null) {
+ //        console.log('exec error: ' + error);
+ //    }
 
 // var customers = {
 // 				customer1: {

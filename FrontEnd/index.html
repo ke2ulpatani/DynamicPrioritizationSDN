@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dynamic Prioritization</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/JavaScript">
+
+		$(document).ready(function () {
+		  $('#main').submit(function (e) {
+		    e.preventDefault();
+
+		    var s = {"topology": $('#topology').children("option:selected").val(),
+		    		"service_name": $('#service').children("option:selected").val()};
+    		var url = "http://localhost:8081/api/createTopology";
+
+    		$.ajax({
+			        type: "POST",
+			        url: url,
+			        contentType: "application/json; charset=UTF-8", 
+			        data: JSON.stringify({'topology': $('#topology').children('option:selected').val(),
+		    		'service_name': $('#service').children('option:selected').val()}),
+			        headers: {
+           			   "Access-Control-Allow-Origin":"*"
+          			},
+					success: function (response) {
+						console.log("success");
+			            window.location.replace("http://localhost/SDN/response.html");
+			        },
+			        failure: function (response) {
+						console.log("failure"); 
+			        },
+			        error: function (jqXHR, txtStatus, errThrown) {
+			            alert("Error : " + txtStatus + ";" + errThrown);
+			        }
+			    });
+});
+			});
+
+	</script>
+</head>
+
+
+<body>
+	<form id ="main" method = "post">
+		<p>
+			<label>Select list</label>
+			<br>
+			<select id = "topology">
+				<option value = "linear">Linear</option>
+				<option value = "custom">Custom</option>
+			</select>
+			<select id = "service">
+				<option value = "http">HTTP</option>
+				<option value = "voip">VoIP</option>
+			</select>
+			<br>
+			<input type="submit" name="submit">
+		</p>
+	</form>
+</body>
+</html>
