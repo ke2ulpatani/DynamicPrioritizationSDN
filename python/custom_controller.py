@@ -33,7 +33,7 @@ log = core.getLogger()
 # We don't want to flood immediately when a switch connects.
 # Can be overriden on commandline.
 _flood_delay = 0
-
+y = ""
 class LearningSwitch (object):
   """
   The learning switch "brain" associated with a single OpenFlow switch.
@@ -142,7 +142,7 @@ class LearningSwitch (object):
                   src, dpidstr)
       return entry
     except KeyError:
-      log.debug("Rule (%s) NOT found in %s: DROP",
+      log.debug("Rule (%s) NOT found in %s: FORWARD",
                 src, dpidstr)
       return True
 
@@ -232,8 +232,10 @@ class LearningSwitch (object):
         msg.match = of.ofp_match.from_packet(packet, event.port)
         msg.idle_timeout = 10
         msg.hard_timeout = 30
-        if msg.match.tp_src == int(x) or msg.match.tp_dst == int(x):
+        if msg.match.tp_src == y or msg.match.tp_dst == y:
           msg.actions.append(of.ofp_action_enqueue(port = port,queue_id=1))
+        #elif msg.match.tp_src == 5003 or msg.match.tp_dst == 5003:
+          #msg.actions.append(of.ofp_action_enqueue(port = port,queue_id=2))
         else:
           msg.actions.append(of.ofp_action_output(port = port))
         msg.data = event.ofp # 6a

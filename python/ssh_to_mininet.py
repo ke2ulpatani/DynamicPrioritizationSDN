@@ -13,7 +13,7 @@ tos = sys.argv[2]
 mac_to_be_blocked=sys.argv[3]
 bandwidth=sys.argv[4]
 
-def to_mininet(ip_address,topology,tos,mac_to_be_blocked):
+def to_mininet(ip_address,topology,tos,mac_to_be_blocked,bandwidth):
 	
 	ssh = paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -49,6 +49,6 @@ def to_mininet(ip_address,topology,tos,mac_to_be_blocked):
 
 #THIS IS THE MAIN FUNCTION
 #THE NEXT LINE NEEDS TO BE UPDATED WITH THE IP ADDRESS OF MININET
-mininet_ip = "10.152.44.102"
+mininet_ip = "192.168.1.192"
 
-to_mininet(mininet_ip,topology,tos,mac_to_be_blocked)
+to_mininet(mininet_ip,topology,tos,mac_to_be_blocked,bandwidth)
