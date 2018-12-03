@@ -49,6 +49,6 @@ def to_mininet(ip_address,topology,tos,mac_to_be_blocked,bandwidth):
 
 #THIS IS THE MAIN FUNCTION
 #THE NEXT LINE NEEDS TO BE UPDATED WITH THE IP ADDRESS OF MININET
-mininet_ip = "192.168.1.192"
+mininet_ip = "192.168.1.19"
 
 to_mininet(mininet_ip,topology,tos,mac_to_be_blocked,bandwidth)
