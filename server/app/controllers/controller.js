@@ -3,7 +3,7 @@ var exec = require('child_process').exec;
 exports.createTopology = function(request, response) {
 	var shellCommand = "python ../python/ssh_to_mininet.py "+request.body.topology+" "+request.body.service_name+" "+ request.body.mac_address+" "+request.body.bandwidth+" &";
     // console.log("this is the body:\t"+response);
-    // console.log(shellCommand);
+    console.log(shellCommand);
     
     exec(shellCommand, function(error, stdout, stderr) {
 
