@@ -25,12 +25,12 @@ class LearningSwitch (object):
     self.transparent = transparent
     self.macToPort = {}
     self.firewall = {}
-    self.DeleteRule('00-00-00-00-00-01',EthAddr(x))
-    self.DeleteRule('00-00-00-00-00-02',EthAddr(x))
+    self.mac_to_be_blocked('00-00-00-00-00-01',EthAddr(x))
+    self.mac_to_be_blocked('00-00-00-00-00-02',EthAddr(x))
     connection.addListeners(self)
     self.hold_down_expired = _flood_delay == 0
 
-  def CheckRule (self, dpidstr, src=0):
+  def CheckBlockList (self, dpidstr, src=0):
     try:
       entry = self.firewall[(dpidstr, src)]
       
@@ -38,20 +38,15 @@ class LearningSwitch (object):
         log.debug("Rule (%s) found in %s: FORWARD",
                   src, dpidstr)
       else:
-        log.debug("Rule (%s) found in %s: DROP",
+        log.debug("Rule (%s) found in blocked mac list %s",
                   src, dpidstr)
       return entry
     except KeyError:
-      log.debug("Rule (%s) NOT found in %s: FORWARD",
+      log.debug("Rule (%s) NOT found in blocked mac list%s: FORWARD",
                 src, dpidstr)
       return True
 
-  def AddRule (self, dpidstr, src=0,value=True):
-    self.firewall[(dpidstr,src)]=value
-    log.debug("Adding firewall rule in %s: %s", dpidstr, src) 
-    log.debug("%s",self.firewall)
-
-  def DeleteRule (self, dpidstr, src=0):
+  def mac_to_be_blocked (self, dpidstr, src=0):
     self.firewall[(dpidstr,src)]=False
   
   def _handle_PacketIn (self, event):
@@ -95,7 +90,7 @@ class LearningSwitch (object):
 
     dpidstr = dpid_to_str(event.connection.dpid)
 
-    if self.CheckRule(dpidstr, packet.src) == False:
+    if self.CheckBlockList(dpidstr, packet.src) == False:
       drop()
       return
 
