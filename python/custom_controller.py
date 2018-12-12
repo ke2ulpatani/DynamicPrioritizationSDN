@@ -1,3 +1,4 @@
+
 from pox.core import core
 import pox.openflow.libopenflow_01 as of
 from pox.lib.util import dpid_to_str
@@ -14,13 +15,17 @@ _flood_delay = 0
 #Code to have mac address blocking as well as for service prioritization
 y = ""
 class LearningSwitch (object):
+  
   def __init__ (self, connection, transparent):
     with open("/home/mininet/pox/pox/forwarding/mac_to_be_blocked.txt") as file:
       x=file.read()
     log.debug("mac added to firewall is %s",x)
     with open("/home/mininet/pox/pox/forwarding/qos.txt") as file:
       y=file.read()
-    log.debug("port added to queue is %s",y)
+    log.debug("port added to queue is %s and type of y is %s",y,type(y))
+    y=y.strip()
+    y=int(y)
+    log.debug("port added to queue is %s and type of y is %s",y,type(y))
     self.connection = connection
     self.transparent = transparent
     self.macToPort = {}
@@ -117,7 +122,16 @@ class LearningSwitch (object):
         msg.match = of.ofp_match.from_packet(packet, event.port)
         msg.idle_timeout = 10
         msg.hard_timeout = 30
-        if msg.match.tp_src == y or msg.match.tp_dst == y:
+	log.debug("type of msg.match.tp_src is %s and value is %s",type(msg.match.tp_src),msg.match.tp_src)
+	#log.debug("port added to queue is %s and type of y is %s",y,type(y))
+	with open("/home/mininet/pox/pox/forwarding/qos.txt") as file:
+	  y=file.read()
+	log.debug("port added to queue is %s and type of y is %s",y,type(y))
+	y=y.strip()
+	y=int(y)
+	log.debug("port added to queue is %s and type of y is %s",y,type(y))
+	if msg.match.tp_src == y or msg.match.tp_dst == y:
+	  log.debug("msg sent to special queue")
           msg.actions.append(of.ofp_action_enqueue(port = port,queue_id=1))
         #elif msg.match.tp_src == 5003 or msg.match.tp_dst == 5003:
           #msg.actions.append(of.ofp_action_enqueue(port = port,queue_id=2))
