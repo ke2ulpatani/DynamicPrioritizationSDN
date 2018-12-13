@@ -11,10 +11,12 @@
 		    e.preventDefault();
 
 		    // var service_name = $('#service_name').children("option:selected").val();
-		    var mac_address = $('#mac_address').children("option:selected").val();
+		    // var mac_address = $('#mac_address').children("option:selected").val();
+		    var mac_address = $('#mac_address option:selected').val();
+
 		    var bandwidth = "na";
 		    var port_number = "na";
-		    var topology = $('#topology').children("option:selected").val();;
+		    var topology = $('#topology option:selected').val();//.children("option:selected").val();;
 
 		    var s = {
 		    			"mac_address": mac_address,

@@ -22,13 +22,20 @@
     		});
 
 
+		// var mac_address = "";
+		// $('#mac_address').change(function(){
+  //                   mac_address = $('#mac_address :selected').val();
+                    
+  //       });
+
+
 
 
 		$('#main').submit(function (e) {
 		    e.preventDefault();
 
 		    // var service_name = $('#service_name').children("option:selected").val();
-		    var mac_address = $('#mac_address').children("option:selected").val();
+		    var mac_address = $('#mac_address option:selected').val();//children("option:selected").val();
 		    var bandwidth = $('#bandwidth').val();
 		    var port_number = $('#port_number').val();
 		    var topology = "na";

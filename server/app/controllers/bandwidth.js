@@ -9,6 +9,6 @@ exports.getBandwidth = function(request, response) {
     	// let jsonData = JSON.parse(data);
     	// response.end(jsonData.all+","+jsonData.service)	
     	console.log("Hitting");
-    	response.end (data);
+    	response.end (data.toString().replace(/\n/g,"<br>"));
     });		
 };
