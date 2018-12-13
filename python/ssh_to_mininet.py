@@ -83,5 +83,5 @@ mininet_ip = "192.168.1.19"
 
 if topology=="na":
 	to_mininet1(mininet_ip,topology,tos,mac_to_be_blocked,bandwidth)
-elif topology=="linear" or topology=="tree"
+elif topology=="linear" or topology=="tree":
 	to_mininet2(mininet_ip,topology,tos,mac_to_be_blocked,bandwidth)
