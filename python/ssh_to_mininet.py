@@ -78,7 +78,7 @@ def to_mininet2(ip_address,topology,tos,mac_to_be_blocked,bandwidth):
 		stop_index=searchLines.find("*** results:")
 		reqd=searchLines[start_index:stop_index]	
 	with open("/tmp/bandwidth.json","w") as file:
-		file.write(searchLines)
+		file.write(reqd)
 
 
 #----------------------------------------------------------------------------------------------------------------------
