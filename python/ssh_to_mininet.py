@@ -49,6 +49,18 @@ def to_mininet2(ip_address,topology,tos,mac_to_be_blocked,bandwidth):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(ip_address,username='mininet', password='mininet', port=22)
         #command1="python /home/mininet/pox_configure.py 4567 "+str(mac_to_be_blocked)+" 20"
+        command1="sudo python /home/mininet/pox_configure.py "+str(mac_to_be_blocked"
+        stdin, stdout, stderr = ssh.exec_command(command1)
+        stdout.channel.recv_exit_status()
+        ssh.close()
+        command_1_output = stdout.read().replace('\n',' ')
+        command_1_output=command_1_output.replace('\r','')
+        command_1_output=command_1_output.lower()
+
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(ip_address,username='mininet', password='mininet', port=22)
+        #command1="python /home/mininet/pox_configure.py 4567 "+str(mac_to_be_blocked)+" 20"
         command1="sudo python /home/mininet/test_new.py "+topology+" &> /home/mininet/results.txt"
         stdin, stdout, stderr = ssh.exec_command(command1)
         stdout.channel.recv_exit_status()
@@ -58,7 +70,7 @@ def to_mininet2(ip_address,topology,tos,mac_to_be_blocked,bandwidth):
         command_1_output=command_1_output.lower()
         #print command_1_output
         #print ("\n\n\n")
-        time.sleep(120)
+        time.sleep(1)
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(ip_address,username='mininet', password='mininet', port=22)
@@ -67,7 +79,7 @@ def to_mininet2(ip_address,topology,tos,mac_to_be_blocked,bandwidth):
         stdin, stdout, stderr = ssh.exec_command(command2)
         stdout.channel.recv_exit_status()
         ssh.close()
-        command_2_output = stdout.read().replace('\n',' ')
+        #command_2_output = stdout.read().replace('\n',' ')
         command_2_output=command_2_output.replace('\r','')
         command_2_output=command_2_output.lower()
 	start_index=0
