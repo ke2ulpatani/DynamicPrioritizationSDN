@@ -73,12 +73,12 @@ def to_mininet2(ip_address,topology,tos,mac_to_be_blocked,bandwidth):
 	start_index=0
 	stop_index=0
 	searchLines=command_2_output
-	for i in range(len(searchLines)):
-		start_index=searchLines.find("*** ping: testing ping reachability")+len("*** ping: testing ping reachability")
-		stop_index=searchLines.find("*** results:")
-		reqd=searchLines[start_index:stop_index]	
+	#for i in range(len(searchLines)):
+		#start_index=searchLines.find("*** ping: testing ping reachability")+len("*** ping: testing ping reachability")
+		#stop_index=searchLines.find("*** results:")
+		#reqd=searchLines[start_index:stop_index]	
 	with open("/tmp/bandwidth.json","w") as file:
-		file.write(reqd)
+		file.write(searchLines)
 
 
 #----------------------------------------------------------------------------------------------------------------------

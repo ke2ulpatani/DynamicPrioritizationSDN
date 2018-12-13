@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Ping Result</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/JavaScript">
+		$(document).ready(function () {
+			var output = "Not enough data to populate the bandwidth.";
+			$('#result').html(output);
+			var url = "http://localhost:8081/api/getBandwidth";
+
+
+  			$("#result").load(url);
+    		var refreshId = setInterval(function() {
+			$("#result").load(url);
+    		}, 2000);
+		});
+	</script>
+</head>
+<body>
+<font size="7">
+	<b>
+		<p align="middle">
+			Following is the result of ping operation:
+		</p>
+		<br>
+		<div id = "result" align = "middle">
+			
+		</div>
+	</b>
+</font>
+</body>
+</html>

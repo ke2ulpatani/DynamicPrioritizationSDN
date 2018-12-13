@@ -7,34 +7,16 @@
 
 		$(document).ready(function () {
 
-		$('#service_name').change(function(e) {
-				console.log("This was called");
-				
-				console.log("Option selected: \t"+ $(this).children("option:selected").text());
-
-				
-				if( $(this).children("option:selected").text() != "Custom" ) {
-
-					$('#port_number').val($(this).children("option:selected").val());
-				} else {
-					$('#port_number').val("");
-				}
-    		});
-
-
-
-
 		$('#main').submit(function (e) {
 		    e.preventDefault();
 
 		    // var service_name = $('#service_name').children("option:selected").val();
 		    var mac_address = $('#mac_address').children("option:selected").val();
-		    var bandwidth = $('#bandwidth').val();
-		    var port_number = $('#port_number').val();
-		    var topology = "na";
+		    var bandwidth = "na";
+		    var port_number = "na";
+		    var topology = $('#topology').children("option:selected").val();;
 
 		    var s = {
-		    			// "service_name": service_name,
 		    			"mac_address": mac_address,
 		    			"topology":topology,
 		    			"bandwidth":bandwidth,
@@ -44,7 +26,6 @@
 		    var url = "http://localhost:8081/api/createTopology";
 
 		    console.log("This is the payload:\t"+JSON.stringify(s));
-
 
 
     		$.ajax({
@@ -57,7 +38,7 @@
           			},
 					success: function (response) {
 						console.log("success");
-			            window.location.replace("http://localhost/SDN/response.html");
+			            window.location.replace("http://localhost/SDN/ping_result.html");
 			        },
 			        failure: function (response) {
 						console.log("failure"); 
@@ -67,6 +48,10 @@
 			        }
 			    });
 			});
+
+
+
+
 		});
 
 	</script>
@@ -78,44 +63,13 @@
 		<p>
 			<font size=7><b><label >Select preferences</label></b></font>
 			<br>
-			<!-- <br>
-			<font size=5>
-			Service which needs to be prioritized:
-			<select id = "service_name" style="width: 100px; height: 30px">
-				<option value = "80">HTTP</option>
-				<option value = "5060">VOiP</option>
-				<option value = "23">FTP</option>
-				<option value = "123">NTP</option>
-				<option value = "25">SMTP</option>
-				<option>Custom</option>
-			</select>
-			<br> -->
 			<br>
+			<font size=5>
 			Topology:
-			<!-- <input type="text" style="width: 100px; height: 20px"> -->
 			<select id = "topology" style="width: 125px; height: 30px">
-				<option>None</option>
-				<option value = "00:00:00:00:00:01">00:00:00:00:00:01</option>
-				<option value = "00:00:00:00:00:02">00:00:00:00:00:02</option>
-				<option value = "00:00:00:00:00:03">00:00:00:00:00:03</option>
-				<option value = "00:00:00:00:00:04">00:00:00:00:00:04</option>
-				<option value = "00:00:00:00:00:05">00:00:00:00:00:05</option>
-				<option value = "00:00:00:00:00:06">00:00:00:00:00:06</option>
+				<option value = "linear" >Linear</option>
+				<option value = "tree" >Tree</option>
 			</select>
-			<br>
-			<br>
-			<!-- Number of hosts:
-			<input type="text" id="number_of_hosts" style="width: 100px; height: 20px">
-			<br> -->
-			<font size=5>
-			<br>
-			Bandwidth for the service:
-			<input type="text" id="bandwidth" style="width: 100px; height: 20px">  <font size=4>Mbps</font>
-			<br>
-			<br>
-			Port for the service:
-			<input type="text" id="port_number" style="width: 100px; height: 20px">
-			
 			<br>
 			<br>
 			
